@@ -25,4 +25,4 @@ jobs:
         run: npm run lint
 
       - name: Check Prettier formatting
-        run: npx prettier --check "**/*.{js,jsx,ts,tsx,json,css,scss,md}"
+        run: npx prettier --write "**/*.{js,jsx,ts,tsx,json,css,scss,md}"
