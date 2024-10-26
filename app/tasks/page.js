@@ -53,30 +53,40 @@ export default function Tasks() {
       if (dayDifference > 1) {
         // Reset streak if more than a day has passed
         setDayStreak(0)
-      } else if (dayDifference === 1) {
-        // Increment streak for a new day
-        setDayStreak(prev => prev + 1)
       }
     }
-    setLastActiveDate(today)
-  }, [completed])
+  }, [lastActiveDate])
 
   const completeTask = (taskId) => {
-    if (!completed[taskId]) {
-      const newCompleted = { ...completed, [taskId]: true }
-      setCompleted(newCompleted)
-      setHearts(prev => prev + 1)
-      setShowCongrats(true)
+    const today = new Date().toDateString()
+    let newDayStreak = dayStreak
 
-      // Save to localStorage
-      const updatedData = {
-        completed: newCompleted,
-        hearts: hearts + 1,
-        dayStreak,
-        lastActiveDate: new Date().toDateString()
+    if (lastActiveDate) {
+      const lastDate = new Date(lastActiveDate)
+      const dayDifference = Math.floor((new Date(today) - lastDate) / (1000 * 60 * 60 * 24))
+
+      if (dayDifference === 1) {
+        newDayStreak += 1
+      } else if (dayDifference > 1) {
+        newDayStreak = 0
       }
-      localStorage.setItem('focusedTaskData', JSON.stringify(updatedData))
+    } else {
+      newDayStreak = 1 // First task completion
     }
+
+    const updatedData = {
+      completed: { ...completed, [taskId]: true },
+      hearts: hearts + 1,
+      dayStreak: newDayStreak,
+      lastActiveDate: today
+    }
+
+    localStorage.setItem('focusedTaskData', JSON.stringify(updatedData))
+    setCompleted(updatedData.completed)
+    setHearts(updatedData.hearts)
+    setDayStreak(updatedData.dayStreak)
+    setLastActiveDate(updatedData.lastActiveDate)
+    setShowCongrats(true)
   }
 
   return (
@@ -86,7 +96,7 @@ export default function Tasks() {
         <div className={styles.hearts}>
           {hearts} ❤️
         </div>
-        <div class={styles.streak}>
+        <div className={styles.streak}>
           {dayStreak} 🔥
         </div>
       </div>
