@@ -3,7 +3,7 @@ import localFont from "next/font/local";
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
-  weight: "100 900",
+  weight: "100 900"
 });
 
 export const metadata = {
@@ -12,7 +12,7 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
-  return (git 
+  return (
     <html lang="en">
       <body className={`${geistSans.variable}`}>
         {children}
