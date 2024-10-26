@@ -1,12 +1,122 @@
+// components/MindbloomSplash/MindbloomSplash.js
 'use client'
-import React, { useState } from 'react';
-import { Camera, MapPin, Clock, Loader2, ArrowLeft, Plus, Minus } from 'lucide-react';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { MapPin, Clock, Loader2, ArrowLeft, Plus, Minus } from 'lucide-react';
+import { CameraView } from './CameraView';
 import styles from './MindbloomSplash.module.css';
 
-const MindbloomSplash = ({ onComplete }) => {
+const BackButton = ({ previousStep, onBack }) => (
+  <button
+    className={styles.backButton}
+    onClick={onBack}
+  >
+    <ArrowLeft className={styles.backIcon} />
+  </button>
+);
+
+const Logo = ({ onStart }) => (
+  <div className={styles.logoContainer}>
+    <div className={styles.logoText}>
+      Mindbloom
+    </div>
+    <div className={styles.logoCircle}>
+      <div className={styles.innerCircle} />
+      <div className={styles.pulseCircle} />
+    </div>
+    <button 
+      onClick={onStart}
+      className={styles.startButton}
+    >
+      Begin Your Journey
+    </button>
+  </div>
+);
+
+const AnalysisView = () => (
+  <div className={styles.analysisContainer}>
+    <div className={styles.loaderWrapper}>
+      <Loader2 className={styles.loader} />
+      <div className={styles.loaderRing} />
+    </div>
+    <p className={styles.analysisText}>Analyzing your mood...</p>
+  </div>
+);
+
+const DetailsForm = ({ 
+  location, 
+  setLocation, 
+  duration, 
+  adjustTime, 
+  onComplete, 
+  onBack 
+}) => (
+  <div className={styles.formContainer}>
+    <BackButton onBack={onBack} />
+    <div className={styles.formCard}>
+      <form className={styles.form}>
+        <div className={styles.inputGroup}>
+          <label className={styles.label}>
+            <MapPin className={styles.labelIcon} />
+            <span>Where are you?</span>
+          </label>
+          <input 
+            type="text"
+            placeholder="Enter your location" 
+            className={styles.input}
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+          />
+        </div>
+        
+        <div className={styles.inputGroup}>
+          <label className={styles.label}>
+            <Clock className={styles.labelIcon} />
+            <span>How much time do you have?</span>
+          </label>
+          <div className={styles.durationPicker}>
+            <button
+              type="button"
+              onClick={() => adjustTime(-15)}
+              disabled={duration <= 15}
+              className={styles.durationButton}
+            >
+              <Minus />
+            </button>
+            
+            <div className={styles.durationDisplay}>
+              <span className={styles.durationValue}>{duration}</span>
+              <span className={styles.durationUnit}>minutes</span>
+            </div>
+            
+            <button
+              type="button"
+              onClick={() => adjustTime(15)}
+              className={styles.durationButton}
+            >
+              <Plus />
+            </button>
+          </div>
+        </div>
+        
+        <button 
+          type="button"
+          onClick={onComplete}
+          className={styles.continueButton}
+        >
+          Begin Tasks
+        </button>
+      </form>
+    </div>
+  </div>
+);
+
+export default function MindbloomSplash({ onComplete }) {
+  const router = useRouter();
   const [step, setStep] = useState('logo');
   const [analyzing, setAnalyzing] = useState(false);
   const [duration, setDuration] = useState(30);
+  const [location, setLocation] = useState('');
 
   const handlePhotoCapture = () => {
     setAnalyzing(true);
@@ -24,134 +134,38 @@ const MindbloomSplash = ({ onComplete }) => {
   };
 
   const handleComplete = () => {
-    onComplete({ mood: 'Lazy', duration: duration });
+    onComplete({
+      mood: 'Lazy',
+      duration: duration,
+      location: location || 'Highgate, London'
+    });
   };
-
-  const BackButton = ({ previousStep }) => (
-    <button
-      className={styles.backButton}
-      onClick={() => setStep(previousStep)}
-    >
-      <ArrowLeft className={styles.backIcon} />
-    </button>
-  );
-
-  const Logo = () => (
-    <div className={styles.logoContainer}>
-      <div className={styles.logoText}>
-        Mindbloom
-      </div>
-      <div className={styles.logoCircle}>
-        <div className={styles.innerCircle} />
-        <div className={styles.pulseCircle} />
-      </div>
-      <button 
-        onClick={() => setStep('camera')}
-        className={styles.startButton}
-      >
-        Begin Your Journey
-      </button>
-    </div>
-  );
-
-  const CameraView = () => (
-    <div className={styles.cameraContainer}>
-      <BackButton previousStep="logo" />
-      <div className={styles.cameraContent}>
-        <div className={styles.cameraPreview}>
-          <Camera size={64} className={styles.cameraIcon} />
-        </div>
-        <div className={styles.alert}>
-          <h4 className={styles.alertTitle}>Ready for Your Moment</h4>
-          <p className={styles.alertDescription}>
-            Center your subject in the frame to capture the perfect shot
-          </p>
-        </div>
-        <button 
-          onClick={handlePhotoCapture}
-          className={styles.captureButton}
-        >
-          Capture Moment
-        </button>
-      </div>
-    </div>
-  );
-
-  const AnalysisView = () => (
-    <div className={styles.analysisContainer}>
-      <div className={styles.loaderWrapper}>
-        <Loader2 className={styles.loader} />
-        <div className={styles.loaderRing} />
-      </div>
-      <p className={styles.analysisText}>Processing your moment...</p>
-    </div>
-  );
-
-  const DetailsForm = () => (
-    <div className={styles.formContainer}>
-      <BackButton previousStep="camera" />
-      <div className={styles.formCard}>
-        <form className={styles.form}>
-          <div className={styles.inputGroup}>
-            <label className={styles.label}>
-              <MapPin className={styles.labelIcon} />
-              <span>Where are you?</span>
-            </label>
-            <input 
-              type="text"
-              placeholder="Enter your location" 
-              className={styles.input}
-            />
-          </div>
-          
-          <div className={styles.inputGroup}>
-            <label className={styles.label}>
-              <Clock className={styles.labelIcon} />
-              <span>How much time do you have?</span>
-            </label>
-            <div className={styles.durationPicker}>
-              <button
-                onClick={() => adjustTime(-15)}
-                disabled={duration <= 15}
-                className={styles.durationButton}
-              >
-                <Minus />
-              </button>
-              
-              <div className={styles.durationDisplay}>
-                <span className={styles.durationValue}>{duration}</span>
-                <span className={styles.durationUnit}>minutes</span>
-              </div>
-              
-              <button
-                onClick={() => adjustTime(15)}
-                className={styles.durationButton}
-              >
-                <Plus />
-              </button>
-            </div>
-          </div>
-          
-          <button 
-            type="button"
-            onClick={handleComplete}
-            className={styles.continueButton}
-          >
-            Continue
-          </button>
-        </form>
-      </div>
-    </div>
-  );
 
   return (
     <div className={styles.container}>
-      {step === 'logo' && <Logo />}
-      {step === 'camera' && <CameraView />}
+      {step === 'logo' && (
+        <Logo onStart={() => setStep('camera')} />
+      )}
+      
+      {step === 'camera' && (
+        <>
+          <BackButton onBack={() => setStep('logo')} />
+          <CameraView onCapture={handlePhotoCapture} />
+        </>
+      )}
+      
       {analyzing && <AnalysisView />}
-      {step === 'details' && <DetailsForm />}
+      
+      {step === 'details' && (
+        <DetailsForm
+          location={location}
+          setLocation={setLocation}
+          duration={duration}
+          adjustTime={adjustTime}
+          onComplete={handleComplete}
+          onBack={() => setStep('camera')}
+        />
+      )}
     </div>
   );
-};
-
-export default MindbloomSplash;
+}

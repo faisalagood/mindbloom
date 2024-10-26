@@ -2,9 +2,9 @@
 'use client'
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { TASKS } from '@/lib/constants';
-import Image from 'next/image';
 import styles from './TaskGrid.module.css';
 
 export default function TaskGrid({ userDetails }) {
@@ -28,15 +28,6 @@ export default function TaskGrid({ userDetails }) {
     }
   }, []);
 
-  useEffect(() => {
-    const today = new Date().toDateString();
-    Object.entries(lastCompleted).forEach(([taskId, date]) => {
-      if (date !== today && completed[taskId]) {
-        setCompleted(prev => ({ ...prev, [taskId]: false }));
-      }
-    });
-  }, [lastCompleted, completed]);
-
   const getLastSevenDays = () => {
     const today = new Date();
     const days = [];
@@ -45,7 +36,6 @@ export default function TaskGrid({ userDetails }) {
       const date = new Date(today);
       date.setDate(today.getDate() - i);
       const dateString = date.toDateString();
-      // Check if there was any task completed on this day
       days[6-i] = Object.values(lastCompleted).some(completedDate => 
         completedDate === dateString
       );
@@ -70,8 +60,11 @@ export default function TaskGrid({ userDetails }) {
         : Math.max(0, (streaks[taskId] || 0) - 1) 
     };
 
-    const newHearts = !wasCompletedToday ? hearts + 1 : Math.max(0, hearts - 1);
-
+    // Update hearts when completing or uncompleting tasks
+    const newHearts = !wasCompletedToday 
+      ? Math.min(hearts + 1, 10) // Cap hearts at 10
+      : Math.max(0, hearts - 1); // Prevent negative hearts
+    
     setCompleted(updatedCompleted);
     setLastCompleted(updatedLastCompleted);
     setStreaks(updatedStreaks);
@@ -100,65 +93,87 @@ export default function TaskGrid({ userDetails }) {
     router.push('/summary');
   };
 
+  // Determine which plant image to show based on hearts
+  const getPlantImage = () => {
+    const imagePath = hearts <= 3 
+      ? "/images/plant-small.png" 
+      : hearts <= 6 
+        ? "/images/plant-medium.png" 
+        : "/images/plant-large.png";
+    
+    console.log('Current hearts:', hearts);
+    console.log('Selected image path:', imagePath);
+    return imagePath;
+  };
+
   return (
     <div className={styles.trackerContainer}>
-      <div className={styles.backgroundImage}>
-        <Image
-          src={hearts < 5 ? "/src/small.png" : "/src/big.png"}
-          width={450}
-          height={500}
-          alt="Plant"
-        />
-      </div>
-      
-      <div className={styles.trackerHeader}>
-        <div className={styles.hearts}>
-          {hearts} ❤️
+      <div className={styles.contentWrapper}>
+        <div className={styles.backgroundImage}>
+          <Image
+            src={getPlantImage()}
+            width={450}
+            height={500}
+            alt={`Plant growth stage ${hearts}/10`}
+            priority
+            onError={(e) => {
+              console.error('Error loading image:', e);
+              console.log('Attempted image path:', getPlantImage());
+            }}
+          />
         </div>
-        <div className={styles.streak}>
-          {dayStreak} 🔥
-        </div>
-      </div>
-
-      <div className={styles.taskGrid}>
-        {TASKS.map(task => (
-          <div
-            key={task.id}
-            className={`${styles.taskCard} ${completed[task.id] ? styles.completed : ''}`}
-            onClick={() => toggleTask(task.id)}
-          >
-            <div className={styles.taskIcon}>{task.icon}</div>
-            <h3 className={styles.taskLabel}>{task.label}</h3>
-            <div className={styles.streakCount}>
-              {streaks[task.id] ? `${streaks[task.id]} day streak` : 'Start streak'}
+        
+        <div className={styles.content}>
+          <div className={styles.trackerHeader}>
+            <div className={styles.hearts}>
+              {hearts} ❤️
+            </div>
+            <div className={styles.streak}>
+              {dayStreak} 🔥
             </div>
           </div>
-        ))}
-      </div>
 
-      <div className={styles.infoContainer}>
-        <p className={styles.infoItem}>
-          <span className={styles.label}>Mood:</span> {userDetails?.mood || 'Lazy'}
-        </p>
-        <p className={styles.infoItem}>
-          <span className={styles.label}>Duration:</span> {userDetails?.duration || 10} minutes
-        </p>
-        <p className={styles.infoItem}>
-          <span className={styles.label}>Location:</span> Highgate, London
-        </p>
-        <p className={styles.infoItem}>
-          <span className={styles.label}>Weather:</span> Light rain, cloudy
-        </p>
-      </div>
+          <div className={styles.taskGrid}>
+            {TASKS.map(task => (
+              <div
+                key={task.id}
+                className={`${styles.taskCard} ${completed[task.id] ? styles.completed : ''}`}
+                onClick={() => toggleTask(task.id)}
+              >
+                <div className={styles.taskIcon}>{task.icon}</div>
+                <h3 className={styles.taskLabel}>{task.label}</h3>
+                <div className={styles.streakCount}>
+                  {streaks[task.id] ? `${streaks[task.id]} day streak` : 'Start streak'}
+                </div>
+              </div>
+            ))}
+          </div>
 
-      {hasCompletedAnyTask && (
-        <button 
-          onClick={handleDayComplete}
-          className={styles.completeDay}
-        >
-          Time to Rest & Reflect 🌙
-        </button>
-      )}
+          <div className={styles.infoContainer}>
+            <p className={styles.infoItem}>
+              <span className={styles.label}>Mood:</span> {userDetails?.mood || 'Lazy'}
+            </p>
+            <p className={styles.infoItem}>
+              <span className={styles.label}>Duration:</span> {userDetails?.duration || 10} minutes
+            </p>
+            <p className={styles.infoItem}>
+              <span className={styles.label}>Location:</span> {userDetails?.location || 'Highgate, London'}
+            </p>
+            <p className={styles.infoItem}>
+              <span className={styles.label}>Weather:</span> Light rain, cloudy
+            </p>
+          </div>
+
+          {hasCompletedAnyTask && (
+            <button 
+              onClick={handleDayComplete}
+              className={styles.completeDay}
+            >
+              Time to Rest & Reflect 🌙
+            </button>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
