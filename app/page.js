@@ -10,7 +10,7 @@ export default function Home() {
 			<main>
 				<section>
 					<article>
-						Welcome to Mindbloom!
+						Welcome to Mindbloom!!
 						</article>
 				</section>
 			</main>
