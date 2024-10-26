@@ -12,9 +12,9 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
-  return (
+  return (git 
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
+      <body className={`${geistSans.variable}`}>
         {children}
       </body>
     </html>
