@@ -2,6 +2,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import styles from './styles.module.css'
+import Image from 'next/image'
 
 
 const tasks = [
@@ -25,7 +26,7 @@ const tasks = [
 
 export default function Tasks() {
   const [completed, setCompleted] = useState({})
-  const [hearts, setHearts] = useState(0)
+  const [hearts, setHearts] = useState(4)
   const [dayStreak, setDayStreak] = useState(0)
   const [selectedTask, setSelectedTask] = useState(null)
   const [showCongrats, setShowCongrats] = useState(false)
@@ -92,6 +93,14 @@ export default function Tasks() {
   return (
     <div className={styles.trackerContainer}>
       {/* Header */}
+      <div className={styles.backgroundImage}>
+        <Image
+        src={hearts < 5 ? "/src/small.png" : "/src/big.png"}
+        width={450}
+        height={500}
+        alt="Plant"
+        ></Image>
+      </div>
       <div className={styles.trackerHeader}>
         <div className={styles.hearts}>
           {hearts} ❤️
@@ -115,6 +124,15 @@ export default function Tasks() {
           </div>
         ))}
       </div>
+
+      <div className={styles.infoContainer}>
+        <p className={styles.infoItem}><span className={styles.label}>Mood:</span> Lazy</p>
+        <p className={styles.infoItem}><span className={styles.label}>Duration:</span> 10 minutes</p>
+        <p className={styles.infoItem}><span className={styles.label}>Location:</span> Highgate, London</p>
+        <p className={styles.infoItem}><span className={styles.label}>Weather:</span> Light rain, cloudy</p>
+      </div>
+
+     
 
       {/* Task Detail Overlay */}
       {selectedTask && (

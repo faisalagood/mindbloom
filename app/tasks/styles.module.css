@@ -5,6 +5,16 @@
     padding: 20px;
     position: relative;
     min-height: 100vh;
+    overflow: hidden; /* Ensure content doesn't overflow */
+  }
+
+  .backgroundImage {
+    position: absolute;
+    top: 200px;
+    left: 0;
+    width: 100%;
+    height: calc(100% - 50px); /* Adjust height to account for the top offset */
+    z-index: -1; /* Ensure it is behind all other content */
   }
   
   .trackerHeader {
@@ -14,6 +24,7 @@
     padding: 20px;
     font-size: 24px;
     font-weight: bold;
+    background-color: rgba(255, 255, 255, 0.8); /* White background with 80% opacity */
   }
   
   .hearts, .streak {
@@ -21,6 +32,7 @@
     border-radius: 20px;
     background: white;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: rgba(255, 255, 255, 0.8); /* White background with 80% opacity */
   }
   
   .taskGrid {
@@ -28,6 +40,7 @@
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 20px;
     padding: 20px;
+    background-color: rgba(255, 255, 255, 0.8); /* White background with 80% opacity */
   }
   
   .taskCard {
@@ -39,6 +52,7 @@
     transition: all 0.3s ease;
     border: 3px solid #eee;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background-color: rgba(255, 255, 255, 0.8); /* White background with 80% opacity */
   }
   
   .taskCard:hover:not(.completed) {
@@ -176,4 +190,27 @@
     .overlayContent {
       padding: 20px;
     }
+  }
+  .infoContainer {
+    /* background-color: #f9f9f9; */
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 16px;
+    max-width: 300px;
+    margin: 16px auto;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: rgba(255, 255, 255, 0.8); /* White background with 80% opacity */
+  }
+  
+  .infoItem {
+    display: flex;
+    justify-content: space-between;
+    margin: 8px 0;
+    font-size: 16px;
+    color: #333;
+  }
+  
+  .label {
+    font-weight: bold;
+    color: #555;
   }
