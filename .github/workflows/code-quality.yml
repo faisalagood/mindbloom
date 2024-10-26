@@ -11,10 +11,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-        with:
-          # Fetch all history for Git changes comparison
-          fetch-depth: 0
-          ref: ${{ github.head_ref }}
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -27,20 +23,6 @@ jobs:
 
       - name: Run ESLint
         run: npm run lint
-        continue-on-error: true  # Don't fail the workflow, just report issues
 
       - name: Check Prettier formatting
         run: npx prettier --check "**/*.{js,jsx,ts,tsx,json,css,scss,md}"
-        continue-on-error: true  # Don't fail the workflow, just report issues
-
-      - name: Apply Prettier formatting
-        run: |
-          npx prettier --write "**/*.{js,jsx,ts,tsx,json,css,scss,md}"
-          
-      - name: Commit changes
-        if: github.event_name == 'pull_request'
-        run: |
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git commit -am "style: format code with prettier" || echo "No changes to commit"
-          git push
