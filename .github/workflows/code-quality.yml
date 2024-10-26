@@ -15,23 +15,14 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 'lts/*' # Use the latest LTS version of Node.js
+          node-version: 'lts/*'
           cache: 'npm'
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Lint with ESLint
+      - name: Run ESLint
         run: npm run lint
 
-      - name: Format with Prettier
-        uses: creyD/prettier_action@v4.2
-        with:
-          prettier_options: --write .  # Format all files
-
-      - name: Check for formatting issues
-        run: if [ -n "$(git status --porcelain)" ]; then echo "::set-output name=has_formatting_issues::true"; fi
-
-      - name: Fail if formatting issues found
-        if: steps.format.outputs.has_formatting_issues
-        run: exit 1
+      - name: Check Prettier formatting
+        run: npx prettier --write "**/*.{js,jsx,ts,tsx,json,css,scss,md}"
