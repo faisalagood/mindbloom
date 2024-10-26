@@ -25,9 +25,10 @@ jobs:
         run: npm run lint
 
       - name: Format with Prettier
-        uses: creyD/prettier_action@v4.2
+        uses: creyD/prettier_action@v4.3 
         with:
-          prettier_options: --write .  # Format all files
+          prettier_options: --write .
+        run: npm install 
 
       - name: Check for formatting issues
         run: if [ -n "$(git status --porcelain)" ]; then echo "::set-output name=has_formatting_issues::true"; fi
