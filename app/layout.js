@@ -1,9 +1,27 @@
-import localFont from "next/font/local";
+import localFont from 'next/font/local';
+import { DM_Sans } from 'next/font/google';
+import './globals.css';
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900"
+const clash = localFont({
+  src: [
+    {
+      path: './fonts/ClashDisplay-Semibold.woff2',
+      weight: '600',
+      style: 'normal',
+    },
+    {
+      path: './fonts/ClashDisplay-Medium.woff2',
+      weight: '500',
+      style: 'normal',
+    },
+  ],
+  variable: '--font-clash'
+});
+
+const dmSans = DM_Sans({ 
+  subsets: ['latin'],
+  variable: '--font-dm-sans',
+  weight: ['400', '500', '700'],
 });
 
 export const metadata = {
@@ -13,8 +31,8 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <body className={`${geistSans.variable}`}>
+    <html lang="en" className={`${clash.variable} ${dmSans.variable}`}>
+      <body>
         {children}
       </body>
     </html>

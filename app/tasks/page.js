@@ -1,7 +1,7 @@
 // TaskTracker.js
 'use client'
 import { useState, useEffect } from 'react'
-import styles from './styles.module.css'
+import styles from './tasks.module.css'
 import Image from 'next/image'
 
 
