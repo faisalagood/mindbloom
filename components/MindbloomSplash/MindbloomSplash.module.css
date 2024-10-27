@@ -1,0 +1,490 @@
+/* components/MindbloomSplash/MindbloomSplash.module.css */
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(to bottom right, #f3e8ff, #ffffff, #e8f4ff);
+  padding: 1rem;
+}
+
+/* Logo Section */
+.logoContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  padding: 2rem;
+}
+
+.logoText {
+  font-size: 3.75rem;
+  font-weight: bold;
+  background: linear-gradient(to right, #9333ea, #3b82f6, #9333ea);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: gradient 8s ease infinite;
+}
+
+.logoCircle {
+  position: relative;
+  width: 8rem;
+  height: 8rem;
+}
+
+.innerCircle {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: linear-gradient(to right, #9333ea, #3b82f6, #9333ea);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.pulseCircle {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: linear-gradient(to right, #9333ea, #3b82f6, #9333ea);
+  opacity: 0.2;
+  animation: ping 2s ease-in-out infinite;
+}
+
+/* Camera Section */
+.cameraContainer {
+  position: relative;
+  width: 100%;
+  max-width: 42rem;
+  margin: 0 auto;
+}
+
+.cameraContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  padding-top: 5rem;
+}
+
+.cameraPreview {
+  width: 100%;
+  aspect-ratio: 16/9;
+  background: linear-gradient(to bottom right, #f5f3ff, #eff6ff);
+  border-radius: 1rem;
+  border: 2px solid #e9d5ff;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.cameraPreview:hover {
+  border-color: #d8b4fe;
+}
+
+.cameraIcon {
+  color: #a855f7;
+  transition: transform 0.3s ease;
+}
+
+.cameraPreview:hover .cameraIcon {
+  transform: scale(1.1);
+}
+
+/* Alert Styles */
+.alert {
+  background: linear-gradient(to right, #f5f3ff, #eff6ff);
+  border: 1px solid #e9d5ff;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  width: 100%;
+}
+
+.alertTitle {
+  color: #7e22ce;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.alertDescription {
+  color: #9333ea;
+}
+
+/* Buttons */
+.backButton {
+  position: absolute;
+  top: 1.5rem;
+  left: 1.5rem;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  border: none;
+  background: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.backButton:hover {
+  background-color: #f3e8ff;
+}
+
+.backIcon {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: #9333ea;
+}
+
+.startButton,
+.captureButton,
+.continueButton {
+  background: linear-gradient(to right, #9333ea, #3b82f6);
+  color: white;
+  padding: 1.5rem 2rem;
+  border-radius: 0.5rem;
+  border: none;
+  font-size: 1.125rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  width: 100%;
+}
+
+.startButton:hover,
+.captureButton:hover,
+.continueButton:hover {
+  background: linear-gradient(to right, #7e22ce, #2563eb);
+  box-shadow: 0 6px 8px -1px rgba(0, 0, 0, 0.15);
+}
+
+/* Analysis View */
+.analysisContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  gap: 1.5rem;
+}
+
+.loaderWrapper {
+  position: relative;
+}
+
+.loader {
+  width: 4rem;
+  height: 4rem;
+  animation: spin 1s linear infinite;
+  color: #9333ea;
+}
+
+.loaderRing {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 4px solid #f3e8ff;
+  animation: pulse 2s ease infinite;
+}
+
+.analysisText {
+  font-size: 1.25rem;
+  color: #7e22ce;
+  font-weight: 500;
+}
+
+/* Form Styles */
+.formContainer {
+  position: relative;
+  width: 100%;
+}
+
+.formCard {
+  max-width: 28rem;
+  margin: 5rem auto 0;
+  background: linear-gradient(to bottom right, #ffffff, #f3e8ff);
+  border: 1px solid #e9d5ff;
+  border-radius: 1rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.label {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: #7e22ce;
+}
+
+.labelIcon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.input {
+  padding: 1.5rem;
+  border: 1px solid #e9d5ff;
+  border-radius: 0.5rem;
+  font-size: 1.125rem;
+  transition: all 0.3s ease;
+}
+
+.input:focus {
+  border-color: #c084fc;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(192, 132, 252, 0.2);
+}
+
+.durationPicker {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  background: white;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid #e9d5ff;
+}
+
+.durationButton {
+  width: 3rem;
+  height: 3rem;
+  border: 1px solid #e9d5ff;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.durationButton:hover:not(:disabled) {
+  background: #f3e8ff;
+}
+
+.durationButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.durationDisplay {
+  flex: 1;
+  text-align: center;
+}
+
+.durationValue {
+  font-size: 1.875rem;
+  font-weight: bold;
+  color: #7e22ce;
+}
+
+.durationUnit {
+  margin-left: 0.5rem;
+  font-size: 1.125rem;
+  color: #9333ea;
+}
+
+/* Animations */
+@keyframes gradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+@keyframes ping {
+  0% { transform: scale(1); opacity: 0.2; }
+  75%, 100% { transform: scale(2); opacity: 0; }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 640px) {
+  .logoText {
+    font-size: 3rem;
+  }
+  
+  .formCard {
+    margin: 4rem 1rem 0;
+  }
+}
+
+.cameraPreview {
+  width: 100%;
+  aspect-ratio: 16/9;
+  background: linear-gradient(to bottom right, #f5f3ff, #eff6ff);
+  border-radius: 1rem;
+  border: 2px solid #e9d5ff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  position: relative;
+}
+
+.videoFeed {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scaleX(-1); /* Mirror the feed */
+}
+
+.cameraOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.scanLine {
+  position: absolute;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, 
+    rgba(126, 34, 206, 0),
+    rgba(126, 34, 206, 0.5),
+    rgba(126, 34, 206, 0)
+  );
+  animation: scan 2s linear infinite;
+}
+
+@keyframes scan {
+  0% {
+    top: 0;
+  }
+  100% {
+    top: 100%;
+  }
+}
+
+.captureButton {
+  background: linear-gradient(to right, #7e22ce, #9333ea);
+  color: white;
+  font-size: 1.125rem;
+  padding: 1rem 2rem;
+  border-radius: 2rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 300px;
+  margin: 1rem auto;
+}
+
+.captureButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+.alert {
+  background: white;
+  border: 1px solid #e9d5ff;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  margin: 1rem 0;
+  text-align: center;
+}
+
+.alertTitle {
+  color: #7e22ce;
+  font-family: var(--font-clash);
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.alertDescription {
+  color: #6b7280;
+}
+
+/* Add fallback styles for when camera access is denied */
+.cameraPreview.fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(to bottom right, #f5f3ff, #eff6ff);
+}
+
+.cameraIcon {
+  font-size: 3rem;
+  color: #7e22ce;
+}
+
+.aiAnalysisContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  padding: 2rem;
+  text-align: center;
+}
+
+.sparklesWrapper {
+  position: relative;
+  width: 6rem;
+  height: 6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sparklesIcon {
+  width: 3rem;
+  height: 3rem;
+  color: #9333ea;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.sparklesRing {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 3px solid #e9d5ff;
+  animation: spin 3s linear infinite;
+}
+
+.typewriterText {
+  font-size: 1.25rem;
+  color: #7e22ce;
+  min-height: 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

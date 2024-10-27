@@ -1,0 +1,10 @@
+{
+  "name": "Mindbloom",
+  "short_name": "Mindbloom",
+  "theme_color": "#7e22ce",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "orientation": "portrait",
+  "scope": "/",
+  "start_url": "/"
+}

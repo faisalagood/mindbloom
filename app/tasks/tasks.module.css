@@ -1,0 +1,216 @@
+/* styles/taskTracker.css */
+.trackerContainer {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    position: relative;
+    min-height: 100vh;
+    overflow: hidden; /* Ensure content doesn't overflow */
+  }
+
+  .backgroundImage {
+    position: absolute;
+    top: 200px;
+    left: 0;
+    width: 100%;
+    height: calc(100% - 50px); /* Adjust height to account for the top offset */
+    z-index: -1; /* Ensure it is behind all other content */
+  }
+  
+  .trackerHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    font-size: 24px;
+    font-weight: bold;
+    background-color: rgba(255, 255, 255, 0.8); /* White background with 80% opacity */
+  }
+  
+  .hearts, .streak {
+    padding: 10px 20px;
+    border-radius: 20px;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: rgba(255, 255, 255, 0.8); /* White background with 80% opacity */
+  }
+  
+  .taskGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.8); /* White background with 80% opacity */
+  }
+  
+  .taskCard {
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 3px solid #eee;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background-color: rgba(255, 255, 255, 0.8); /* White background with 80% opacity */
+  }
+  
+  .taskCard:hover:not(.completed) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  .taskCard.completed {
+    border-color: #48BB78;
+    cursor: default;
+  }
+  
+  .taskIcon {
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+  }
+  
+  .taskCard h3 {
+    margin: 10px 0;
+    font-size: 1.2rem;
+    color: #2D3748;
+  }
+  
+  .taskDuration {
+    font-size: 0.9rem;
+    color: #718096;
+    margin-top: 10px;
+  }
+  
+  /* Overlay Styles */
+  .taskOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.98);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
+  }
+  
+  .overlayContent {
+    max-width: 500px;
+    padding: 30px;
+    text-align: center;
+  }
+  
+  .overlayContent h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+  }
+  
+  .duration {
+    font-size: 1.2rem;
+    color: #718096;
+    margin: 15px 0;
+  }
+  
+  .description {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin: 20px 0;
+  }
+  
+  .impact {
+    font-size: 1rem;
+    color: #4A5568;
+    font-style: italic;
+    margin: 20px 0;
+  }
+  
+  .completeButton, .back-button {
+    padding: 12px 30px;
+    border-radius: 25px;
+    border: none;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin: 10px;
+  }
+  
+  .completeButton {
+    background: #4299E1;
+    color: white;
+  }
+  
+  .completeButton:hover {
+    background: #3182CE;
+  }
+  
+  .backButton {
+    background: #EDF2F7;
+    color: #4A5568;
+  }
+  
+  .backButton:hover {
+    background: #E2E8F0;
+  }
+  
+  .congrats {
+    animation: popIn 0.5s ease;
+  }
+  
+  .heartsGained {
+    font-size: 2rem;
+    margin: 20px 0;
+    animation: pulse 1s infinite;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  @keyframes popIn {
+    0% { transform: scale(0.8); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  
+  @keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+  }
+  
+  @media (max-width: 480px) {
+    .trackerHeader {
+      font-size: 20px;
+      padding: 15px;
+    }
+    
+    .overlayContent {
+      padding: 20px;
+    }
+  }
+  .infoContainer {
+    /* background-color: #f9f9f9; */
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 16px;
+    max-width: 300px;
+    margin: 16px auto;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: rgba(255, 255, 255, 0.8); /* White background with 80% opacity */
+  }
+  
+  .infoItem {
+    display: flex;
+    justify-content: space-between;
+    margin: 8px 0;
+    font-size: 16px;
+    color: #333;
+  }
+  
+  .label {
+    font-weight: bold;
+    color: #555;
+  }

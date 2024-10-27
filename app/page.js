@@ -1,22 +1,25 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+'use client'
+import { useState } from 'react';
+import MindbloomSplash from '@/components/MindbloomSplash/MindbloomSplash';
+import TaskGrid from '@/components/TaskGrid/TaskGrid';
+import styles from './page.module.css';
 
 export default function Home() {
+  const [showTasks, setShowTasks] = useState(false);
+  const [userDetails, setUserDetails] = useState(null);
+
+  const handleSplashComplete = (details) => {
+    setUserDetails(details);
+    setShowTasks(true);
+  };
+
   return (
-		<>
-			<header>
-				<h1>Mindbloom</h1>
-			</header>
-			<main>
-				<section>
-					<article>
-						Welcome to Mindbloom!!
-						</article>
-				</section>
-			</main>
-			<footer>
-				<p>Made By Team CTRL + ALT + ELITE</p>
-			</footer>
-		</>
+    <main className={styles.main}>
+      {!showTasks ? (
+        <MindbloomSplash onComplete={handleSplashComplete} />
+      ) : (
+        <TaskGrid userDetails={userDetails} />
+      )}
+    </main>
   );
 }
