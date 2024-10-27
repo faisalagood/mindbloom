@@ -1,8 +1,8 @@
-// components/TaskGrid/TaskGrid.js
 'use client'
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import { Sparkles, Calendar } from 'lucide-react';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { TASKS } from '@/lib/constants';
 import styles from './TaskGrid.module.css';
@@ -12,21 +12,57 @@ export default function TaskGrid({ userDetails }) {
   const [completed, setCompleted] = useState({});
   const [streaks, setStreaks] = useState({});
   const [lastCompleted, setLastCompleted] = useState({});
-  const [hearts, setHearts] = useState(4);
-  const [dayStreak, setDayStreak] = useState(0);
+  const [hearts, setHearts] = useState(0);
+  const [heartsEarnedToday, setHeartsEarnedToday] = useState(0);
+  const [currentTime, setCurrentTime] = useState(new Date());
   const { getStoredData, setStoredData } = useLocalStorage('taskData');
 
+  // Update time every minute
   useEffect(() => {
-    const savedData = getStoredData();
-    if (savedData) {
-      const { completed, streaks, lastCompleted, hearts, dayStreak } = savedData;
-      setCompleted(completed || {});
-      setStreaks(streaks || {});
-      setLastCompleted(lastCompleted || {});
-      setHearts(hearts || 4);
-      setDayStreak(dayStreak || 0);
-    }
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 60000);
+
+    return () => clearInterval(timer);
   }, []);
+
+  // Initialize state from localStorage only on mount
+  useEffect(() => {
+    const initializeData = () => {
+      const savedData = getStoredData();
+      if (savedData) {
+        const { completed, streaks, lastCompleted, hearts, heartsEarnedToday } = savedData;
+        setCompleted(completed || {});
+        setStreaks(streaks || {});
+        setLastCompleted(lastCompleted || {});
+        setHearts(hearts || 4);
+        
+        // Check if heartsEarnedToday is from today
+        const today = new Date().toDateString();
+        const savedDate = savedData.lastHeartEarnedDate;
+        
+        if (savedDate === today) {
+          setHeartsEarnedToday(heartsEarnedToday || 0);
+        } else {
+          // Reset hearts earned if it's a new day
+          setHeartsEarnedToday(0);
+        }
+      }
+    };
+
+    initializeData();
+  }, []);
+
+  const formatDateTime = (date) => {
+    const options = { 
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+      hour: '2-digit',
+      minute: '2-digit'
+    };
+    return date.toLocaleDateString('en-GB', options);
+  };
 
   const getLastSevenDays = () => {
     const today = new Date();
@@ -60,22 +96,35 @@ export default function TaskGrid({ userDetails }) {
         : Math.max(0, (streaks[taskId] || 0) - 1) 
     };
 
-    // Update hearts when completing or uncompleting tasks
-    const newHearts = !wasCompletedToday 
-      ? Math.min(hearts + 1, 10) // Cap hearts at 10
-      : Math.max(0, hearts - 1); // Prevent negative hearts
+    // Calculate new hearts with daily limit
+    let newHearts = hearts;
+    let newHeartsEarnedToday = heartsEarnedToday;
+
+    if (!wasCompletedToday) {
+      // Only earn a heart if we haven't reached the daily limit
+      if (heartsEarnedToday < 8) {
+        newHearts = Math.min(hearts + 1, 10);
+        newHeartsEarnedToday = heartsEarnedToday + 1;
+      }
+    } else {
+      // When uncompleting a task
+      newHearts = Math.max(0, hearts - 1);
+      newHeartsEarnedToday = Math.max(0, heartsEarnedToday - 1);
+    }
     
     setCompleted(updatedCompleted);
     setLastCompleted(updatedLastCompleted);
     setStreaks(updatedStreaks);
     setHearts(newHearts);
+    setHeartsEarnedToday(newHeartsEarnedToday);
 
     setStoredData({
       completed: updatedCompleted,
       streaks: updatedStreaks,
       lastCompleted: updatedLastCompleted,
       hearts: newHearts,
-      dayStreak
+      heartsEarnedToday: newHeartsEarnedToday,
+      lastHeartEarnedDate: today
     });
   };
 
@@ -83,32 +132,32 @@ export default function TaskGrid({ userDetails }) {
 
   const handleDayComplete = () => {
     const summaryData = {
-      streakCount: dayStreak,
-      mood: userDetails?.mood,
       completedTasks: Object.keys(completed).filter(key => completed[key]).length,
-      lastSevenDays: getLastSevenDays()
+      lastSevenDays: getLastSevenDays(),
+      mood: userDetails?.mood
     };
     
     localStorage.setItem('dailySummary', JSON.stringify(summaryData));
     router.push('/summary');
   };
 
-  // Determine which plant image to show based on hearts
   const getPlantImage = () => {
-    const imagePath = hearts <= 3 
-      ? "/images/plant-small.png" 
-      : hearts <= 6 
-        ? "/images/plant-medium.png" 
-        : "/images/plant-large.png";
-    
-    console.log('Current hearts:', hearts);
-    console.log('Selected image path:', imagePath);
-    return imagePath;
-  };
+		const imagePath = hearts < 2 
+			? "/images/plant-small.png" 
+			: hearts <= 4 
+				? "/images/plant-medium.png" 
+				: "/images/plant-large.png";
+		
+		return imagePath;
+	};
 
   return (
     <div className={styles.trackerContainer}>
       <div className={styles.contentWrapper}>
+        <div className={styles.header}>
+          <div className={styles.logoText}>Mindbloom</div>
+        </div>
+
         <div className={styles.backgroundImage}>
           <Image
             src={getPlantImage()}
@@ -126,20 +175,33 @@ export default function TaskGrid({ userDetails }) {
         <div className={styles.content}>
           <div className={styles.trackerHeader}>
             <div className={styles.hearts}>
-              {hearts} ❤️
+              <span>{hearts} ❤️</span>
+              <span className={styles.heartsLimit}>
+                {heartsEarnedToday}/8 today
+              </span>
             </div>
-            <div className={styles.streak}>
-              {dayStreak} 🔥
+            <div className={styles.dateTime}>
+              <Calendar className={styles.calendarIcon} />
+              <span>{formatDateTime(currentTime)}</span>
             </div>
           </div>
 
           <div className={styles.taskGrid}>
-            {TASKS.map(task => (
+            {TASKS.map((task, index) => (
               <div
                 key={task.id}
-                className={`${styles.taskCard} ${completed[task.id] ? styles.completed : ''}`}
+                className={`
+                  ${styles.taskCard} 
+                  ${completed[task.id] ? styles.completed : ''} 
+                  ${index < 2 ? styles.aiSuggested : ''}
+                `}
                 onClick={() => toggleTask(task.id)}
               >
+                {index < 2 && (
+                  <div className={styles.aiIndicator}>
+                    <Sparkles className={styles.sparklesIcon} />
+                  </div>
+                )}
                 <div className={styles.taskIcon}>{task.icon}</div>
                 <h3 className={styles.taskLabel}>{task.label}</h3>
                 <div className={styles.streakCount}>

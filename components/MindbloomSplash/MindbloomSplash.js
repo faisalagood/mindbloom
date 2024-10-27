@@ -70,13 +70,7 @@ const TypewriterText = ({
 };
 
 const AIAnalysis = ({ onAnalysisComplete }) => {
-  const messages = [
-    "Analyzing your responses...",
-    "Oh, looks like you're taking a lazy day today! 🌟",
-    "Checking the weather in London...",
-    "Oh wow, it's actually raining today in London, totally unexpected! ☔",
-    "Preparing your personalized mindfulness journey..."
-  ];
+  const messages = ["Based on your mood, location, and available time today, we've created your tasks ✨"];
 
   return (
     <div className={styles.aiAnalysisContainer}>
@@ -89,7 +83,7 @@ const AIAnalysis = ({ onAnalysisComplete }) => {
         onComplete={onAnalysisComplete}
         typeSpeed={30}     // Fast typing
         deleteSpeed={20}   // Fast deleting
-        delayBetween={500} // Short pause between messages
+        delayBetween={500} // Short pause before completing
       />
     </div>
   );
