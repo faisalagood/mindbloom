@@ -436,3 +436,55 @@
   font-size: 3rem;
   color: #7e22ce;
 }
+
+.aiAnalysisContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  padding: 2rem;
+  text-align: center;
+}
+
+.sparklesWrapper {
+  position: relative;
+  width: 6rem;
+  height: 6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sparklesIcon {
+  width: 3rem;
+  height: 3rem;
+  color: #9333ea;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.sparklesRing {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 3px solid #e9d5ff;
+  animation: spin 3s linear infinite;
+}
+
+.typewriterText {
+  font-size: 1.25rem;
+  color: #7e22ce;
+  min-height: 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

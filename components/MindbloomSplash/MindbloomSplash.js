@@ -1,56 +1,101 @@
-// components/MindbloomSplash/MindbloomSplash.js
-'use client'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { MapPin, Clock, Loader2, ArrowLeft, Plus, Minus } from 'lucide-react';
+import { MapPin, Clock, Loader2, ArrowLeft, Plus, Minus, Sparkles } from 'lucide-react';
 import { CameraView } from './CameraView';
 import styles from './MindbloomSplash.module.css';
 
-const BackButton = ({ previousStep, onBack }) => (
-  <button
-    className={styles.backButton}
-    onClick={onBack}
-  >
+const BackButton = ({ onBack }) => (
+  <button className={styles.backButton} onClick={onBack}>
     <ArrowLeft className={styles.backIcon} />
   </button>
 );
 
 const Logo = ({ onStart }) => (
   <div className={styles.logoContainer}>
-    <div className={styles.logoText}>
-      Mindbloom
-    </div>
+    <div className={styles.logoText}>Mindbloom</div>
     <div className={styles.logoCircle}>
       <div className={styles.innerCircle} />
       <div className={styles.pulseCircle} />
     </div>
-    <button 
-      onClick={onStart}
-      className={styles.startButton}
-    >
+    <button onClick={onStart} className={styles.startButton}>
       Begin Your Journey
     </button>
   </div>
 );
 
-const AnalysisView = () => (
-  <div className={styles.analysisContainer}>
-    <div className={styles.loaderWrapper}>
-      <Loader2 className={styles.loader} />
-      <div className={styles.loaderRing} />
-    </div>
-    <p className={styles.analysisText}>Analyzing your mood...</p>
-  </div>
-);
+const TypewriterText = ({ 
+  messages, 
+  onComplete,
+  typeSpeed = 30,      // Faster typing
+  deleteSpeed = 20,    // Faster deleting
+  delayBetween = 500  // Shorter pause between messages
+}) => {
+  const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
+  const [displayText, setDisplayText] = useState('');
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isComplete, setIsComplete] = useState(false);
 
-const DetailsForm = ({ 
-  location, 
-  setLocation, 
-  duration, 
-  adjustTime, 
-  onComplete, 
-  onBack 
-}) => (
+  useEffect(() => {
+    if (isComplete) return;
+
+    const currentMessage = messages[currentMessageIndex];
+    const timer = setTimeout(() => {
+      if (!isDeleting) {
+        if (displayText.length < currentMessage.length) {
+          setDisplayText(currentMessage.substring(0, displayText.length + 1));
+        } else {
+          setTimeout(() => setIsDeleting(true), delayBetween);
+        }
+      } else {
+        if (displayText.length > 0) {
+          setDisplayText(currentMessage.substring(0, displayText.length - 1));
+        } else {
+          setIsDeleting(false);
+          if (currentMessageIndex < messages.length - 1) {
+            setCurrentMessageIndex(prev => prev + 1);
+          } else {
+            setIsComplete(true);
+            onComplete();
+          }
+        }
+      }
+    }, isDeleting ? deleteSpeed : typeSpeed);
+
+    return () => clearTimeout(timer);
+  }, [displayText, isDeleting, currentMessageIndex, messages, isComplete, onComplete, typeSpeed, deleteSpeed, delayBetween]);
+
+  return (
+    <div className={styles.typewriterText}>{displayText}</div>
+  );
+};
+
+const AIAnalysis = ({ onAnalysisComplete }) => {
+  const messages = [
+    "Analyzing your responses...",
+    "Oh, looks like you're taking a lazy day today! 🌟",
+    "Checking the weather in London...",
+    "Oh wow, it's actually raining today in London, totally unexpected! ☔",
+    "Preparing your personalized mindfulness journey..."
+  ];
+
+  return (
+    <div className={styles.aiAnalysisContainer}>
+      <div className={styles.sparklesWrapper}>
+        <Sparkles className={styles.sparklesIcon} />
+        <div className={styles.sparklesRing} />
+      </div>
+      <TypewriterText 
+        messages={messages} 
+        onComplete={onAnalysisComplete}
+        typeSpeed={30}     // Fast typing
+        deleteSpeed={20}   // Fast deleting
+        delayBetween={500} // Short pause between messages
+      />
+    </div>
+  );
+};
+
+const DetailsForm = ({ location, setLocation, duration, adjustTime, onComplete, onBack }) => (
   <div className={styles.formContainer}>
     <BackButton onBack={onBack} />
     <div className={styles.formCard}>
@@ -119,11 +164,7 @@ export default function MindbloomSplash({ onComplete }) {
   const [location, setLocation] = useState('');
 
   const handlePhotoCapture = () => {
-    setAnalyzing(true);
-    setTimeout(() => {
-      setAnalyzing(false);
-      setStep('details');
-    }, 2000);
+    setStep('details');
   };
 
   const adjustTime = (amount) => {
@@ -133,7 +174,12 @@ export default function MindbloomSplash({ onComplete }) {
     });
   };
 
-  const handleComplete = () => {
+  const handleDetailsSubmit = () => {
+    setAnalyzing(true);
+    setStep('analysis');
+  };
+
+  const handleAnalysisComplete = () => {
     onComplete({
       mood: 'Lazy',
       duration: duration,
@@ -154,17 +200,19 @@ export default function MindbloomSplash({ onComplete }) {
         </>
       )}
       
-      {analyzing && <AnalysisView />}
-      
       {step === 'details' && (
         <DetailsForm
           location={location}
           setLocation={setLocation}
           duration={duration}
           adjustTime={adjustTime}
-          onComplete={handleComplete}
+          onComplete={handleDetailsSubmit}
           onBack={() => setStep('camera')}
         />
+      )}
+
+      {step === 'analysis' && (
+        <AIAnalysis onAnalysisComplete={handleAnalysisComplete} />
       )}
     </div>
   );
